@@ -64,6 +64,7 @@ import com.example.appinstallercheckerkt.model.MockPackageViewObj
 import com.example.appinstallercheckerkt.model.PackageViewObj
 import com.example.appinstallercheckerkt.ui.theme.AppInstallerCheckerKtTheme
 import com.example.appinstallercheckerkt.util.appDetailInfo
+import com.example.appinstallercheckerkt.util.filterBySearchString
 import com.example.appinstallercheckerkt.util.jumpToStore
 
 @Composable
@@ -92,8 +93,7 @@ private fun MainScreen(
                 // empty
             } else {
                 val packagesToShow = remember(uiState, searchString) {
-                    uiState.packagesFiltered
-                        .filter { it.packageName.contains(searchString) || it.name.contains(searchString) }
+                    uiState.packagesFiltered.filterBySearchString(searchString)
                 }
 
                 if (!uiState.refreshing && packagesToShow.isEmpty()) {

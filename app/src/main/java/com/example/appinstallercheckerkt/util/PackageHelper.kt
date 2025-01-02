@@ -12,6 +12,8 @@ import com.example.appinstallercheckerkt.model.PackageViewObj
 import com.example.appinstallercheckerkt.model.SortAndFilterState
 import com.example.appinstallercheckerkt.model.SortMode
 import java.text.Collator
+import java.text.Normalizer
+import java.util.Locale
 
 private const val TAG = "PackageHelper"
 
@@ -66,4 +68,19 @@ fun SortAndFilterState.doFilter(packagesUnfiltered: List<PackageViewObj>): List<
     val result = packages.toList()
     Log.d(TAG, "doFilter: ${packagesUnfiltered.size} -> ${result.size} packages")
     return result
+}
+
+/** Search packages ignoring case or Unicode form difference */
+fun Iterable<PackageViewObj>.filterBySearchString(searchString: String): List<PackageViewObj> {
+    val regex = "\\p{InCombiningDiacriticalMarks}+".toRegex()
+    fun normalize(str: String): String {
+        return Normalizer.normalize(str, Normalizer.Form.NFKD)
+            .replace(regex, "")
+            .lowercase(Locale.getDefault())
+    }
+
+    val searchStringN = normalize(searchString)
+    return this.filter {
+        normalize(it.packageName).contains(searchStringN) || normalize(it.name).contains(searchStringN)
+    }
 }
