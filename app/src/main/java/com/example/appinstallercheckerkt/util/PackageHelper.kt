@@ -30,8 +30,10 @@ fun jumpToStore(context: Context, packageName: String, playStoreOnly: Boolean) {
     val intent = Intent(Intent.ACTION_VIEW, uriBuilder.build())
     if (playStoreOnly) {
         intent.setPackage("com.android.vending")
+        context.startActivity(intent)
+    } else {
+        context.startActivity(Intent.createChooser(intent, null))
     }
-    context.startActivity(intent)
 }
 
 fun appDetailInfo(context: Context, packageName: String) {
